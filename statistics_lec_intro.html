@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>확률과 통계: 데이터로 세상을 읽는 여정 (AI 기능 추가)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-box {
+            border: 2px solid #0073BC;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .flowchart-arrow {
+            font-size: 2.5rem;
+            color: #0073BC;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 90%;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0073BC;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-gray-800">
+
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-[#004F82]">확률과 통계: 데이터로 세상을 읽는 여정</h1>
+            <p class="text-md text-[#0073BC]">13주간의 핵심 커리큘럼 시각화 (AI 기능 탑재)</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="intro" class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-[#004F82]">데이터 속에 숨겨진 비밀, AI와 함께 발견해보세요!</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                이 인포그래픽은 13주간의 여정을 통해 여러분을 데이터 과학의 세계로 안내합니다. 각 주제별로 제공되는 ✨AI 기능을 통해 개념을 더 쉽게 이해하고, 연습 문제를 풀며 실력을 점검해보세요.
+            </p>
+        </section>
+
+        <div class="bg-[#0073BC] text-white p-6 rounded-xl shadow-2xl mb-12">
+            <h2 class="text-3xl font-bold text-center mb-2">Part 1: 데이터의 기초 다지기 (1-6주차)</h2>
+            <p class="text-center text-lg text-blue-100">세상을 숫자로 표현하고, 불확실성을 이해하는 첫걸음</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">1-2주차: 데이터의 요약과 표현</h3>
+                <p class="text-gray-600 mb-4">데이터의 중심(평균, 중앙값)과 퍼진 정도(분산, 표준편차)를 파악하고, 히스토그램 같은 그래프로 시각화하여 데이터의 전반적인 모습을 이해합니다.</p>
+                <div class="flex-grow chart-container">
+                    <canvas id="gradeDistributionChart"></canvas>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('히스토그램')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('기술통계학')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">3-4주차: 확률의 규칙</h3>
+                <p class="text-gray-600 mb-4">확률은 불확실한 사건의 가능성을 측정하는 도구입니다. 조건부 확률과 베이즈 정리를 통해 새로운 정보를 바탕으로 기존의 믿음을 어떻게 업데이트하는지 배웁니다.</p>
+                <div class="flex-grow flex items-center justify-center p-4">
+                     <div class="relative w-full h-48">
+                        <div class="absolute top-1/2 left-1/4 w-32 h-32 bg-[#00A1E4] rounded-full opacity-70 transform -translate-y-1/2"></div>
+                        <div class="absolute top-1/2 right-1/4 w-32 h-32 bg-[#FDB813] rounded-full opacity-70 transform -translate-y-1/2"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-lg font-bold text-black z-10">A ∩ B</span>
+                        </div>
+                         <span class="absolute top-1/2 left-[calc(25%-1rem)] transform -translate-y-1/2 font-bold text-white z-10">A</span>
+                         <span class="absolute top-1/2 right-[calc(25%-1rem)] transform -translate-y-1/2 font-bold text-white z-10">B</span>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-gray-500 mt-2">HTML/CSS로 구현한 사건의 교집합 시각화</p>
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('조건부 확률')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('베이즈 정리')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">5주차: 이산확률변수</h3>
+                <p class="text-gray-600 mb-4">셀 수 있는 결과에 확률을 부여합니다. 동전 던지기처럼 성공/실패가 나뉘는 경우, 이항분포를 통해 특정 횟수의 성공 확률을 정확히 계산할 수 있습니다.</p>
+                <div class="flex-grow chart-container">
+                    <canvas id="binomialChart"></canvas>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('이항분포')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('이항분포')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">6주차: 연속확률변수와 정규분포</h3>
+                <p class="text-gray-600 mb-4">키, 몸무게처럼 연속적인 값을 다룹니다. 통계학에서 가장 중요한 정규분포(종 모양 곡선)는 수많은 자연 및 사회 현상을 설명하는 강력한 모델입니다.</p>
+                <div class="flex-grow chart-container">
+                    <canvas id="normalDistributionChart"></canvas>
+                </div>
+                 <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('정규분포')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('정규분포 표준화')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-[#004F82] text-white p-6 rounded-xl shadow-2xl my-12">
+            <h2 class="text-3xl font-bold text-center mb-2">Part 2: 데이터로 추론하기 (8-13주차)</h2>
+            <p class="text-center text-lg text-blue-100">표본으로 모집단을 꿰뚫어 보는 통찰의 기술</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-12">
+            <h3 class="text-2xl font-bold mb-2 text-center text-[#004F82]">8주차: 통계학의 꽃, 중심극한정리 (CLT)</h3>
+            <p class="text-gray-600 mb-6 text-center max-w-3xl mx-auto">모집단의 분포 모양과 상관없이, 표본의 크기가 충분히 크다면 표본 평균들의 분포는 항상 정규분포에 가까워진다는 놀라운 정리입니다. 이는 표본만으로 모집단을 추론할 수 있는 이론적 기반이 됩니다.</p>
+            <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flowchart-box"> <p class="font-bold">1. 어떤 모집단이든</p> <div class="w-32 h-20 border-2 border-dashed border-[#00A1E4] skew-x-12 mx-auto mt-2"></div></div>
+                <div class="flowchart-arrow transform md:rotate-0 rotate-90">→</div>
+                <div class="flowchart-box"> <p class="font-bold">2. 표본을 여러 번 추출</p> <div class="grid grid-cols-3 gap-1 mt-2"> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> <div class="w-8 h-8 bg-[#00A1E4] opacity-50"></div> </div> </div>
+                <div class="flowchart-arrow transform md:rotate-0 rotate-90">→</div>
+                <div class="flowchart-box"> <p class="font-bold">3. 표본 평균의 분포는</p> <div class="chart-container !h-24 !max-w-[150px]"> <canvas id="cltChart"></canvas> </div> <p class="font-bold text-[#0073BC]">정규분포!</p> </div>
+            </div>
+             <div class="mt-6 flex flex-wrap gap-2 justify-center">
+                <button class="ai-button" onclick="getExplanation('중심극한정리')">✨ AI로 개념 쉽게 이해하기</button>
+                <button class="ai-button" onclick="getProblem('중심극한정리')">✨ AI로 연습문제 만들기</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">9-10주차: 통계적 추정과 가설검정</h3>
+                <p class="text-gray-600 mb-4">표본 데이터로 모집단의 평균이 있을 법한 '신뢰구간'을 추정합니다. 또한, 'p-값'을 이용해 우리의 주장이 통계적으로 유의미한지 검증합니다.</p>
+                <div class="flex-grow chart-container"> <canvas id="confidenceIntervalChart"></canvas> </div>
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('신뢰구간')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('가설검정과 p-값')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">11주차: 두 집단 비교 (t-검정)</h3>
+                <p class="text-gray-600 mb-4">A/B 테스트처럼 두 집단 간의 평균에 차이가 있는지 통계적으로 확인합니다. 예를 들어, 새로운 교육 방법이 기존 방법보다 효과적인지 판단할 수 있습니다.</p>
+                <div class="flex-grow chart-container"> <canvas id="ttestChart"></canvas> </div>
+                <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('t-검정')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('독립표본 t-검정')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h3 class="text-xl font-bold mb-2 text-[#004F82]">12주차: 관계와 예측의 시작, 회귀분석</h3>
+                <p class="text-gray-600 mb-4">두 변수 간의 관계를 분석하고 하나의 변수로 다른 변수를 예측하는 모델을 만듭니다. 공부 시간과 성적 사이의 관계를 시각적으로 파악하고 예측할 수 있습니다.</p>
+                <div class="flex-grow chart-container"> <canvas id="regressionChart"></canvas> </div>
+                 <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                    <button class="ai-button" onclick="getExplanation('단순 선형 회귀분석')">✨ AI로 개념 쉽게 이해하기</button>
+                    <button class="ai-button" onclick="getProblem('단순 선형 회귀분석')">✨ AI로 연습문제 만들기</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-12 py-8 border-t-2 border-[#0073BC]">
+            <h2 class="text-3xl font-extrabold text-[#004F82] mb-4">이제 여러분도 데이터 과학자!</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700">
+                13주간의 여정을 통해 여러분은 데이터를 요약, 해석하고 불확실성 속에서 합리적인 결정을 내리는 법을 배웠습니다. 이 지식은 여러분이 마주할 모든 분야에서 강력한 무기가 될 것입니다.
+            </p>
+        </footer>
+
+    </main>
+
+    <div id="aiModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-2xl font-bold text-[#004F82]"></h3>
+                <button onclick="hideModal()" class="text-3xl font-light">&times;</button>
+            </div>
+            <div id="modalBody" class="text-gray-700 leading-relaxed"></div>
+        </div>
+    </div>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aiButton: {
+                            bg: '#E6F6FE',
+                            text: '#004F82',
+                            hoverBg: '#B3E5FC',
+                        }
+                    }
+                }
+            }
+        }
+        const aiButtons = document.querySelectorAll('.ai-button');
+        aiButtons.forEach(button => {
+            button.classList.add('px-4', 'py-2', 'rounded-full', 'bg-aiButton-bg', 'text-aiButton-text', 'font-semibold', 'hover:bg-aiButton-hoverBg', 'transition-colors', 'shadow-sm');
+        });
+
+        const brilliantBlues = { primary: '#00A1E4', secondary: '#0073BC', dark: '#004F82', accent: '#FDB813', light: '#E6F6FE' };
+        const commonTooltipCallback = { plugins: { tooltip: { callbacks: { title: function(tooltipItems) { const item = tooltipItems[0]; let label = item.chart.data.labels[item.dataIndex]; if (Array.isArray(label)) { return label.join(' '); } else { return label; } } } } } };
+        const commonChartOptions = { responsive: true, maintainAspectRatio: false, ...commonTooltipCallback };
+        
+        new Chart(document.getElementById('gradeDistributionChart'), { type: 'bar', data: { labels: ['50-59', '60-69', '70-79', '80-89', '90-100'], datasets: [{ label: '학생 수', data: [5, 12, 25, 18, 8], backgroundColor: brilliantBlues.secondary, borderColor: brilliantBlues.dark, borderWidth: 1 }] }, options: { ...commonChartOptions, scales: { y: { beginAtZero: true, title: { display: true, text: '학생 수' } }, x: { title: { display: true, text: '점수 구간' } } }, plugins: { ...commonChartOptions.plugins, title: { display: true, text: '2주차: 중간고사 성적 히스토그램' } } } });
+        new Chart(document.getElementById('binomialChart'), { type: 'doughnut', data: { labels: ['0번 성공', '1번 성공', '2번 성공', '3번 성공', '4번 성공', '5번 성공'], datasets: [{ label: '확률', data: [3.1, 15.6, 31.3, 31.3, 15.6, 3.1], backgroundColor: [ '#E6F6FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4' ], borderColor: brilliantBlues.dark, }] }, options: { ...commonChartOptions, plugins: { ...commonChartOptions.plugins, title: { display: true, text: '5주차: 동전 5회 던지기 (이항분포)' } } } });
+        new Chart(document.getElementById('normalDistributionChart'), { type: 'line', data: { labels: Array.from({length: 101}, (_, i) => (i-50)/10), datasets: [{ label: '확률밀도', data: Array.from({length: 101}, (_, i) => { const x = (i-50)/10; return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI); }), borderColor: brilliantBlues.primary, backgroundColor: brilliantBlues.light, fill: true, tension: 0.4, pointRadius: 0, }] }, options: { ...commonChartOptions, scales: { y: { display: false }, x: { display: false } }, plugins: { ...commonChartOptions.plugins, title: { display: true, text: '6주차: 표준정규분포 곡선' } } } });
+        new Chart(document.getElementById('cltChart'), { type: 'line', data: { labels: Array.from({length: 21}, (_, i) => (i-10)), datasets: [{ data: Array.from({length: 21}, (_, i) => { const x = (i-10); return Math.exp(-0.1 * x * x); }), borderColor: brilliantBlues.accent, fill: true, backgroundColor: '#FEF3D5', pointRadius: 0, tension: 0.4, }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } } });
+        new Chart(document.getElementById('confidenceIntervalChart'), { type: 'scatter', data: { datasets: [ { label: '모평균', data: [{x: 0, y: 70}, {x: 10, y: 70}], type: 'line', borderColor: brilliantBlues.accent, borderWidth: 3, pointRadius: 0, }, ...[68, 72, 65, 75, 70.5].map((mean, i) => ({ label: `표본 ${i+1}`, data: [{x: i * 2 + 1, y: mean}], backgroundColor: brilliantBlues.secondary, pointRadius: 5 })) ] }, options: { ...commonChartOptions, scales: { x: { min: 0, max: 11, display: false }, y: { min: 60, max: 80, title: {display: true, text: '점수'} } }, plugins: { ...commonChartOptions.plugins, title: { display: true, text: ['9주차: 95% 신뢰구간 추정', '(참값 70점을 포함하는가?)'] } } } });
+        new Chart(document.getElementById('ttestChart'), { type: 'bar', data: { labels: ['교육 방법'], datasets: [ { label: '기존 방법', data: [75], backgroundColor: brilliantBlues.secondary, barPercentage: 0.5 }, { label: '새로운 방법', data: [82], backgroundColor: brilliantBlues.primary, barPercentage: 0.5 } ] }, options: { ...commonChartOptions, scales: { y: { beginAtZero: false, min: 60, title: {display: true, text: '평균 점수'} } }, plugins: { ...commonChartOptions.plugins, title: { display: true, text: '11주차: 두 교육 방법의 효과 비교 (t-검정)' } } } });
+        const regressionData = Array.from({length: 20}, () => ({ x: Math.random() * 10, y: 50 + (Math.random() * 10) * 4 + Math.random() * 10 - 5 }));
+        regressionData.sort((a,b) => a.x - b.x);
+        new Chart(document.getElementById('regressionChart'), { type: 'scatter', data: { datasets: [{ label: '학생 데이터', data: regressionData, backgroundColor: brilliantBlues.secondary, pointRadius: 5 }, { label: '회귀선', data: [{x:0, y:50}, {x:10, y:90}], type: 'line', borderColor: brilliantBlues.accent, borderWidth: 3, pointRadius: 0, tension: 0.1 }] }, options: { ...commonChartOptions, scales: { x: { type: 'linear', position: 'bottom', title: {display: true, text: '공부 시간'} }, y: { title: {display: true, text: '성적'} } }, plugins: { ...commonChartOptions.plugins, title: { display: true, text: ['12주차: 공부 시간과 성적의 관계', '(단순 선형 회귀분석)'] } } } });
+
+        const modal = document.getElementById('aiModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        function showModal() { modal.classList.remove('hidden'); }
+        function hideModal() { modal.classList.add('hidden'); }
+
+        async function callGemini(prompt) {
+            modalBody.innerHTML = '<div class="loader"></div>';
+            showModal();
+            
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    return text.replace(/\n/g, '<br>');
+                } else {
+                    return "AI로부터 답변을 받는 데 실패했습니다. 응답 형식이 올바르지 않습니다.";
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "AI 호출 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+            }
+        }
+
+        async function getExplanation(concept) {
+            modalTitle.innerText = `${concept} - AI 개념 설명`;
+            const prompt = `대학교 1학년생을 위해 통계학 개념인 '${concept}'에 대해 쉽고 명확하게 설명해줘. 일상생활에서 찾을 수 있는 간단한 비유를 들어주고, 핵심만 간결하게 한글로 설명해줘.`;
+            const explanation = await callGemini(prompt);
+            modalBody.innerHTML = explanation;
+        }
+
+        async function getProblem(topic) {
+            modalTitle.innerText = `${topic} - AI 연습 문제`;
+            const prompt = `대학교 1학년생 수준에 맞는 통계학 '${topic}' 관련 연습문제를 만들어줘. 실생활과 관련된 간단한 이야기 형식의 문제와, 그에 대한 풀이 및 정답을 제시해줘. 문제와 풀이는 '---'로 명확하게 구분해줘. 한글로 작성해줘.`;
+            const fullResponse = await callGemini(prompt);
+            
+            if (fullResponse.includes('---')) {
+                const parts = fullResponse.split('---');
+                const question = parts[0];
+                const solution = parts[1];
+                modalBody.innerHTML = `
+                    <div class="mb-4">${question}</div>
+                    <button id="showAnswerBtn" class="px-4 py-2 rounded-md bg-[#0073BC] text-white hover:bg-[#004F82]">정답 보기</button>
+                    <div id="solution" class="hidden mt-4 p-4 bg-gray-100 rounded">${solution}</div>
+                `;
+                document.getElementById('showAnswerBtn').addEventListener('click', () => {
+                    document.getElementById('solution').classList.remove('hidden');
+                    document.getElementById('showAnswerBtn').style.display = 'none';
+                });
+            } else {
+                modalBody.innerHTML = fullResponse;
+            }
+        }
+
+    </script>
+</body>
+</html>
